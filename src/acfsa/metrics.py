@@ -10,7 +10,7 @@ def token_count(text: str, encoding_name: str = "cl100k_base") -> int:
         return len(enc.encode(text))
     except Exception:
         # Transparent approximation if tokenizer package/encoding is unavailable.
-        return len(re.findall(r"\\w+|[^\\w\\s]", text, flags=re.UNICODE))
+        return len(re.findall(r"\w+|[^\w\s]", text, flags=re.UNICODE))
 
 
 def _unique_documents(candidates, k: int):
