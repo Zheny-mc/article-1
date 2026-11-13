@@ -17,7 +17,7 @@ retrieval:
 
 acfsa:
   beta: 1.0
-  min_threshold: 0.35
+  min_threshold: 0.60
   lambda_param: 0.70
 
 experiment:
