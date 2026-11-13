@@ -142,7 +142,7 @@ def run_experiment(config_path: str | Path) -> Path:
             elif method == "adaptive":
                 filtered, filter_audit = filter_candidates(
                     retrieved, beta=float(acfsa_cfg.get("beta", 1.0)),
-                    min_threshold=float(acfsa_cfg.get("min_threshold", 0.35)),
+                    min_threshold=float(acfsa_cfg.get("min_threshold", 0.60)),
                 )
                 selected = filtered[:top_k]
             elif method == "mmr":
@@ -152,17 +152,21 @@ def run_experiment(config_path: str | Path) -> Path:
             else:  # full ACFSA
                 filtered, filter_audit = filter_candidates(
                     retrieved, beta=float(acfsa_cfg.get("beta", 1.0)),
-                    min_threshold=float(acfsa_cfg.get("min_threshold", 0.35)),
+                    min_threshold=float(acfsa_cfg.get("min_threshold", 0.60)),
                 )
+                filtered = remove_exact_duplicates(filtered)
                 selected = mmr_select(filtered, k=top_k,
                                       lambda_param=float(acfsa_cfg.get("lambda_param", 0.70)))
             processing_ms = (time.perf_counter() - started) * 1000
 
             context = build_context(selected)
             answer = None
+            llm_ms = 0.0
             if llm_client is not None:
+                llm_started = time.perf_counter()
                 answer = generate_answer(llm_client, llm_model, query, context,
                                          temperature=float(llm_cfg.get("temperature", 0.0)))
+                llm_ms = (time.perf_counter() - llm_started) * 1000
                 answer_rows.append({
                     "query_id": q_index, "question": query,
                     "reference_answer": item.get("reference_answer", ""),
@@ -181,7 +185,8 @@ def run_experiment(config_path: str | Path) -> Path:
                 "mean_pairwise_similarity": mean_pairwise_similarity(selected),
                 "retrieval_ms": retrieve_ms,
                 "filter_mmr_ms": processing_ms,
-                "latency_ms": retrieve_ms + processing_ms,
+                "llm_ms": llm_ms,
+                "latency_ms": retrieve_ms + processing_ms + llm_ms,
                 "threshold": filter_audit["threshold"] if filter_audit else None,
                 "answer": answer,
             }
