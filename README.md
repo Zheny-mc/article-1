@@ -9,7 +9,7 @@ ACFSA состоит из двух математических механизм
 1. **Адаптивная оценка релевантности.** Для каждого кандидата `d_i` вычисляется cosine similarity `s_i = cos(E(Q), E(d_i))`. Затем по оценкам текущего запроса рассчитывается устойчивый порог `T(Q) = max(T_min, median(S) - beta * 1.4826 * MAD(S))`. Фрагменты ниже порога отбрасываются.
 2. **Подавление семантической избыточности.** После удаления точных дубликатов применяется Maximal Marginal Relevance (MMR): `MMR(d_i) = lambda * RelNorm(d_i,Q) - (1-lambda) * maxSim(d_i,A)`. Это помогает выбирать не только близкие к запросу, но и дополняющие друг друга фрагменты.
 
-Подробное математическое описание и примеры вычислений: [`docs/algorithm.md`](docs/algorithm.md). Блок-схема: [`docs/flowchart.mmd`](docs/flowchart.mmd). План и протокол эксперимента: [`docs/experiment_plan.md`](docs/experiment_plan.md).
+Подробное математическое описание и примеры вычислений: [`docs/algorithm.md`](docs/algorithm.md). Блок-схема: [`docs/flowchart.mmd`](docs/flowchart.mmd). План и протокол эксперимента: [`docs/experiment_plan.md`](docs/experiment_plan.md), документ Word: [`docs/experiment_plan.docx`](docs/experiment_plan.docx).
 
 ## Состав репозитория
 
