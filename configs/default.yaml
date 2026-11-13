@@ -1,0 +1,34 @@
+project:
+  name: acfsa-rag-experiment
+  seed: 42
+
+corpus:
+  directory: data/sample_docs
+  max_chars: 1400
+  overlap_chars: 180
+
+embedding:
+  model_name: intfloat/multilingual-e5-small
+  device: null
+
+retrieval:
+  top_n: 20
+  top_k: 5
+
+acfsa:
+  beta: 1.0
+  min_threshold: 0.35
+  lambda_param: 0.70
+
+experiment:
+  questions_file: data/qa.jsonl
+  output_dir: outputs/latest
+  tokenizer: cl100k_base
+  methods: [baseline, adaptive, mmr, acfsa]
+
+llm:
+  enabled: false
+  api_key_env: OPENAI_API_KEY
+  base_url_env: OPENAI_BASE_URL
+  model_env: LLM_MODEL
+  temperature: 0.0
