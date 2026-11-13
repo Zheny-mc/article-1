@@ -9,7 +9,7 @@ ACFSA состоит из двух математических механизм
 1. **Адаптивная оценка релевантности.** Для каждого кандидата `d_i` вычисляется cosine similarity `s_i = cos(E(Q), E(d_i))`. Затем по оценкам текущего запроса рассчитывается устойчивый порог `T(Q) = max(T_min, median(S) - beta * 1.4826 * MAD(S))`. Фрагменты ниже порога отбрасываются.
 2. **Подавление семантической избыточности.** После удаления точных дубликатов применяется Maximal Marginal Relevance (MMR): `MMR(d_i) = lambda * RelNorm(d_i,Q) - (1-lambda) * maxSim(d_i,A)`. Это помогает выбирать не только близкие к запросу, но и дополняющие друг друга фрагменты.
 
-Подробное математическое описание и примеры вычислений: [`docs/algorithm.md`](docs/algorithm.md). Блок-схема: [`docs/flowchart.mmd`](docs/flowchart.mmd). План и протокол эксперимента: [`docs/experiment_plan.md`](docs/experiment_plan.md), версия Word: [`docs/experiment_plan.docx`](docs/experiment_plan.docx).
+Подробное математическое описание и примеры вычислений: [`docs/algorithm.md`](docs/algorithm.md). Блок-схема: [`docs/flowchart.mmd`](docs/flowchart.mmd). План и протокол эксперимента: [`docs/experiment_plan.md`](docs/experiment_plan.md).
 
 ## Состав репозитория
 
@@ -20,7 +20,7 @@ data/sample_docs/       небольшие демонстрационные до
 data/qa.jsonl           демонстрационные вопросы и разметка по источникам
 scripts/run_experiment.py
                         запуск сравнения Baseline RAG и ACFSA-RAG
-tests/                  модульные тесты порога и MMR
+tests/                  модульные тесты порога, MMR и метрик на уровне уникальных документов
 docs/                   описание метода и план эксперимента
 outputs/                результаты локального запуска (не коммитятся)
 ```
@@ -49,7 +49,7 @@ python scripts/run_experiment.py --config configs/default.yaml
 - `summary.csv` — агрегированные показатели;
 - `audit.json` — scores, адаптивные пороги и выбранные MMR-фрагменты;
 - `run_metadata.json` — параметры и сведения о запуске;
-- `tokens_comparison.png`, `recall_comparison.png`, `ndcg_comparison.png`, `latency_comparison.png` — сравнительные графики.
+- `tokens_comparison.png`, `compression_comparison.png`, `recall_comparison.png`, `ndcg_comparison.png`, `latency_comparison.png` — сравнительные графики.
 
 ## Подключение собственного корпуса
 
