@@ -18,7 +18,7 @@ def adaptive_threshold(
     scores: Sequence[float],
     *,
     beta: float = 1.0,
-    min_threshold: float = 0.35,
+    min_threshold: float = 0.60,
 ) -> ThresholdResult:
     """Compute a robust, query-specific relevance threshold.
 
@@ -55,12 +55,11 @@ def remove_exact_duplicates(candidates):
     return list(unique.values())
 
 
-def filter_candidates(candidates, *, beta: float = 1.0, min_threshold: float = 0.35):
-    """Return filtered candidates and a serializable audit record."""
+def filter_candidates(candidates, *, beta: float = 1.0, min_threshold: float = 0.60):
+    """Apply only the adaptive relevance threshold and return an audit record."""
     scores = [candidate.relevance for candidate in candidates]
     result = adaptive_threshold(scores, beta=beta, min_threshold=min_threshold)
     kept = [candidates[i] for i in result.kept_indices]
-    kept = remove_exact_duplicates(kept)
     audit = {
         "threshold": result.threshold,
         "median": result.median,
@@ -68,6 +67,5 @@ def filter_candidates(candidates, *, beta: float = 1.0, min_threshold: float = 0
         "robust_sigma": result.robust_sigma,
         "input_count": len(candidates),
         "after_threshold_count": len(result.kept_indices),
-        "after_exact_dedup_count": len(kept),
     }
     return kept, audit
