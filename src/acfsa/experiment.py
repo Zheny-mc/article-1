@@ -46,6 +46,7 @@ def _summary_plot(df: pd.DataFrame, output_dir: Path) -> None:
         ("recall_at_k", "Recall@K", "recall_comparison.png"),
         ("ndcg_at_k", "nDCG@K", "ndcg_comparison.png"),
         ("latency_ms", "Время обработки (мс)", "latency_comparison.png"),
+        ("context_reduction_vs_baseline", "Сокращение контекста относительно Baseline", "compression_comparison.png"),
     ]
     method_labels = {"baseline": "Baseline", "adaptive": "Adaptive", "mmr": "MMR", "acfsa": "ACFSA"}
     methods = [method for method in SUPPORTED_METHODS if method in set(df["method"])]
@@ -211,11 +212,26 @@ def run_experiment(config_path: str | Path) -> Path:
         })
 
     results = pd.DataFrame(rows)
+    # Per-query context compression relative to the baseline run.
+    if "baseline" in set(results["method"]):
+        baseline_tokens = results.loc[results["method"] == "baseline"].set_index("query_id")["context_tokens"]
+        reductions = []
+        for row in results.itertuples():
+            baseline_count = baseline_tokens.get(row.query_id, np.nan)
+            if pd.notna(baseline_count) and baseline_count > 0:
+                reductions.append(1.0 - float(row.context_tokens) / float(baseline_count))
+            else:
+                reductions.append(np.nan)
+        results["context_reduction_vs_baseline"] = reductions
+    else:
+        results["context_reduction_vs_baseline"] = np.nan
+
     results.to_csv(output_dir / "results_per_query.csv", index=False, encoding="utf-8-sig")
     summary = results.groupby("method").agg({
         "precision_at_k": "mean", "recall_at_k": "mean", "mrr": "mean", "ndcg_at_k": "mean",
         "context_tokens": ["mean", "median", "std"], "selected_chunks": "mean",
         "unique_sources": "mean", "mean_pairwise_similarity": "mean", "latency_ms": "mean",
+        "context_reduction_vs_baseline": ["mean", "std"],
     })
     summary.to_csv(output_dir / "summary.csv", encoding="utf-8-sig")
     with open(output_dir / "audit.json", "w", encoding="utf-8") as stream:
@@ -227,6 +243,7 @@ def run_experiment(config_path: str | Path) -> Path:
             "documents": len({chunk.doc_id for chunk in chunks}),
             "chunks": len(chunks), "questions": len(questions),
             "top_n": top_n, "top_k": top_k,
+            "retrieval_metric_granularity": "unique documents (first occurrence per doc_id)",
             "methods": methods,
             "acfsa": acfsa_cfg,
             "embedding_seconds": embedding_seconds,
