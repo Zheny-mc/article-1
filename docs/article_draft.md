@@ -275,7 +275,7 @@ Compression=1-\frac{Tokens(C_{ACFSA})}{Tokens(C_{Baseline})},
 
 8. Zhang F., Fan T. Structure-Guided Extractive Compression for Long-Document Summarization via Budget Allocation and Redundancy Filtering // *Expert Systems*. 2026. Vol. 43, Issue 12. Art. e70468. DOI: [10.1111/exsy.70468](https://doi.org/10.1111/exsy.70468).
 
-9. Li Z., Gao C., Wang Z., et al. Rethink-RAG: Dynamic Retrieval Decision and Cooperative Verification for Reliable Multi-Hop Question Answering // *Expert Systems*. 2026. Vol. 43, Issue 12. Art. e70455. DOI: [10.1111/exsy.70455](https://doi.org/10.1111/exsy.2025.70455).
+9. Li Z., Gao C., Wang Z., et al. Rethink-RAG: Dynamic Retrieval Decision and Cooperative Verification for Reliable Multi-Hop Question Answering // *Expert Systems*. 2026. Vol. 43, Issue 12. Art. e70455. DOI: [10.1111/exsy.70455](https://doi.org/10.1111/exsy.2026.70455).
 
 10. Carbonell J., Goldstein J. The Use of MMR, Diversity-Based Reranking for Reordering Documents and Producing Summaries // *Proceedings of the 21st Annual International ACM SIGIR Conference on Research and Development in Information Retrieval (SIGIR '98)*. 1998. P. 335–336. DOI: [10.1145/290941.291025](https://doi.org/10.1145/290941.291025).
 
